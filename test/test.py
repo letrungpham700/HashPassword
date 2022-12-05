@@ -46,11 +46,11 @@ import subprocess
 from pathlib import Path
 import pathlib
 
-def Today():
+def TestToday():
     day_scan = datetime.date.today().strftime('%Y-%m-%d')
     return day_scan
 def SaltUser():
-    day_scan = Today()
+    day_scan = TestToday()
     DirFile = "ScanUser-"+day_scan+".txt"
     File = open(DirFile, 'r')
     Lines = File.readlines()

@@ -76,6 +76,7 @@ print(check_user(hashlib.sha512(l[2].encode('utf-8')).hexdigest()))
 # if __name__ == "__main__":
 #     HashPass()
 
+
 import crypt
 import os
 import string
@@ -88,6 +89,19 @@ except ImportError:
 
 id = ['1','2','2a','2x','2y','3','5','6','7','md5','sha1','gy','y']    
 
+import crypt
+import os
+# PASS='ltpham@2020'
+# SALT='$y$j9T$F31F/jItUvvjOv6IBFNea/$'
+# perl -le 'print crypt($ENV{PASS}, $ENV{SALT})'
+# python -c 'import crypt, os; print(crypt.crypt(os.getenv("PASS"), os.getenv("SALT")))'
+hash = crypt.crypt(os.getenv("ltpham@2020"), os.getenv("$y$j9T$DHb8G5deVnOaO2cu3Xn.b.$"))
+print(hash)
+
+
+import crypt
+hash = crypt.crypt('ltpham@2020', '$y$j9T$' + 'DHb8G5deVnOaO2cu3Xn.b.')
+print(hash)
 # for x in id:
 #   print(type(x))
 #   print(x)
@@ -113,17 +127,55 @@ def changePass (username , password) :
     else :
         print("file '/etc/shadow' is not open !")
 
-
+import crypt
 def sha512_crypt(password, salt=None, rounds=None):
     # if salt is None:
-    salt = 'abc'
+    salt = 'hrEEvwUBF9x6rzbC'
 
-    prefix = '$y$'
+    prefix = '$6$'
     if rounds is not None:
         rounds = max(1000, min(999999999, rounds or 5000))
         prefix += 'rounds={0}$'.format(rounds)
     return crypt.crypt(password, prefix + salt)
     
+def yes_crypt(password, salt=None, rounds=None):
+    # if salt is None:
+    # salt = 'DHb8G5deVnOaO2cu3Xn.b.'
+
+    # prefix = '$y$j9T$'
+    # if rounds is not None:
+    #     rounds = max(1000, min(999999999, rounds or 5000))
+    #     prefix += 'rounds={0}$'.format(rounds)
+    # return crypt.crypt(password, prefix + salt)
+    DirFile = 'Salt.txt'
+    File = open(DirFile, 'r')
+    Lines = File.readlines()
+    count = 0
+    for Salt in Lines:
+        count += 1
+        SaltData = Salt.strip()
+        prefix = '$y$j9T$'
+        if rounds is not None:
+            rounds = max(1000, min(999999999, rounds or 5000))
+            prefix += 'rounds={0}$'.format(rounds)
+            hashyes = crypt.crypt(password, prefix + SaltData)
+            print("Yescrypt - "+password+" : "+hashyes)
+        # return crypt.crypt(password, prefix + SaltData)
+
+    
+def CheckHash():
+    DirFile = 'Password.txt'
+    File = open(DirFile, 'r')
+    Lines = File.readlines()
+    count = 0
+    for Pass in Lines:
+        count += 1
+        PassData = Pass.strip()
+        hashpass = sha512_crypt(PassData)
+        hashyes = yes_crypt(PassData)
+        print("SHA512 - "+PassData+':'+hashpass)
+        print(hashyes)
+
 
 if __name__ == "__main__":
-    sha512_crypt('2021')
+    CheckHash()
